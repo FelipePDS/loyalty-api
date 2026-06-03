@@ -21,4 +21,11 @@ public interface IPointTransactionRepository
     Task<IReadOnlyList<PointTransaction>> GetExpiredUnprocessedAsync(
         DateTime cutoff,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Returns the sum of points from Earned transactions whose ExpiresAt is between <paramref name="from"/> and <paramref name="to"/>.</summary>
+    Task<int> GetAboutToExpirePointsAsync(
+        Guid customerId,
+        DateTime from,
+        DateTime to,
+        CancellationToken cancellationToken = default);
 }
