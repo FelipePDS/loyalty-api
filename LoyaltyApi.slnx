@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/LoyaltyApi.Application/LoyaltyApi.Application.csproj" />
     <Project Path="src/LoyaltyApi.Domain/LoyaltyApi.Domain.csproj" />
+    <Project Path="src/LoyaltyApi.Infrastructure/LoyaltyApi.Infrastructure.csproj" />
   </Folder>
 </Solution>
