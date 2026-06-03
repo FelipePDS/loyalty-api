@@ -53,6 +53,9 @@ public static class InfrastructureServiceCollectionExtensions
         // Token service — singleton because it is stateless and parsing JWTs is thread-safe
         services.AddSingleton<ITokenService, TokenService>();
 
+        // Identity service — scoped because it uses UserManager which is scoped
+        services.AddScoped<IIdentityService, IdentityService>();
+
         // Background service for daily point expiration
         services.AddHostedService<PointExpirationBackgroundService>();
 
