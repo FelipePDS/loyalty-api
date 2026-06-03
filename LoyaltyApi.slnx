@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/LoyaltyApi.Domain/LoyaltyApi.Domain.csproj" />
+  </Folder>
+</Solution>

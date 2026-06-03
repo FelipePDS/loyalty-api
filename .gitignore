@@ -1,0 +1,111 @@
+# ============================================================
+# .NET / ASP.NET Core
+# ============================================================
+bin/
+obj/
+out/
+publish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.ncrunchsolution
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/packages/
+packages/
+nuget.config.local
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# MSTest / xUnit / coverage
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage.json
+lcov.info
+*.opencover.xml
+
+# ============================================================
+# Visual Studio
+# ============================================================
+.vs/
+*.rsuser
+*.vsp
+*.vspx
+*.sap
+*.e2e
+*.VC.db
+*.VC.VC.opendb
+*.vcxproj.filters
+ipch/
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
+# ============================================================
+# JetBrains Rider
+# ============================================================
+.idea/
+*.DotSettings.user
+
+# ============================================================
+# Logs & runtime artifacts
+# ============================================================
+logs/
+*.log
+Serilog/
+
+# ============================================================
+# Docker / secrets
+# ============================================================
+.env
+# Keep the example file — it has no real secrets
+!.env.example
+
+# ============================================================
+# OS
+# ============================================================
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+docs/
