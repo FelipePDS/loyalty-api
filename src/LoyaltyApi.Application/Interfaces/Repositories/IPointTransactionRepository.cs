@@ -4,6 +4,8 @@ namespace LoyaltyApi.Application.Interfaces.Repositories;
 
 public interface IPointTransactionRepository
 {
+    Task<PointTransaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
     /// <summary>Returns a paginated, ordered (newest-first) list of transactions for a customer.</summary>
     Task<(IReadOnlyList<PointTransaction> Items, int TotalCount)> GetByCustomerIdAsync(
         Guid customerId,
@@ -12,6 +14,8 @@ public interface IPointTransactionRepository
         CancellationToken cancellationToken = default);
 
     Task AddAsync(PointTransaction transaction, CancellationToken cancellationToken = default);
+
+    void Update(PointTransaction transaction);
 
     /// <summary>
     /// Returns transactions of type Earned with a non-null ExpiresAt that is &lt;= <paramref name="cutoff"/>

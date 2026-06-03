@@ -178,6 +178,45 @@ public sealed class Customer : BaseEntity<Guid>
         return transaction;
     }
 
+    /// <summary>
+    /// Reverses a previous transaction by applying the opposite point movement.
+    /// Only Earned and Redeemed transactions can be reversed, and only once.
+    /// </summary>
+    /// <returns>The newly created reversal <see cref="PointTransaction"/> (caller must persist it).</returns>
+    public PointTransaction ReverseTransaction(PointTransaction originalTransaction, string reason)
+    {
+        if (originalTransaction.CustomerId != Id)
+            throw new DomainException("Transaction does not belong to this customer.");
+
+        if (!originalTransaction.CanBeReversed)
+            throw new DomainException("This transaction cannot be reversed.");
+
+        if (string.IsNullOrWhiteSpace(reason))
+            throw new DomainException("Reversal reason cannot be empty.");
+
+        // Reverse the point movement: negate the original points value.
+        var reversalPoints = -originalTransaction.Points;
+
+        // Ensure reversal won't drive balance below zero.
+        if (PointsBalance + reversalPoints < 0)
+            throw new DomainException(
+                $"Reversal would result in a negative balance. Current balance: {PointsBalance}.");
+
+        var reversalTransactionId = Guid.NewGuid();
+        var description = $"Reversal of transaction {originalTransaction.Id}: {reason}";
+        var reversalTransaction = PointTransaction.CreateReversed(
+            reversalTransactionId, Id, reversalPoints, description, originalTransaction.Id.ToString());
+
+        originalTransaction.MarkAsReversed(reversalTransactionId);
+
+        PointsBalance += reversalPoints;
+        UpdatedAt = DateTime.UtcNow;
+
+        AddDomainEvent(new PointsReversedEvent(Id, Math.Abs(reversalPoints), reversalTransactionId, originalTransaction.Id));
+
+        return reversalTransaction;
+    }
+
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------

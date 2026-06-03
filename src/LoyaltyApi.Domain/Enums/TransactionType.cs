@@ -9,5 +9,6 @@ public enum TransactionType
     Earned = 0,
     Redeemed = 1,
     Expired = 2,
-    Adjusted = 3
+    Adjusted = 3,
+    Reversed = 4
 }

@@ -36,6 +36,12 @@ internal sealed class PointTransactionRepository : IPointTransactionRepository
     public async Task AddAsync(PointTransaction transaction, CancellationToken cancellationToken = default)
         => await _context.PointTransactions.AddAsync(transaction, cancellationToken);
 
+    public void Update(PointTransaction transaction)
+        => _context.PointTransactions.Update(transaction);
+
+    public async Task<PointTransaction?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        => await _context.PointTransactions.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+
     public async Task<IReadOnlyList<PointTransaction>> GetExpiredUnprocessedAsync(
         DateTime cutoff,
         CancellationToken cancellationToken = default)

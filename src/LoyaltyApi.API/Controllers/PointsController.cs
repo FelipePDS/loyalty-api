@@ -3,6 +3,7 @@ using LoyaltyApi.API.Extensions;
 using LoyaltyApi.Application.Common;
 using LoyaltyApi.Application.Features.Points.Earn;
 using LoyaltyApi.Application.Features.Points.Redeem;
+using LoyaltyApi.Application.Features.Points.Reverse;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,18 @@ public sealed class PointsController(ISender sender) : ControllerBase
         return result.ToHttpResult();
     }
 
+    [HttpPost("{transactionId:guid}/reverse")]
+    [Authorize("PartnerOrAdmin")]
+    public async Task<IResult> Reverse(
+        [FromRoute] Guid transactionId,
+        [FromBody] ReversePointsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new ReversePointsCommand(transactionId, request.Reason);
+        var result = await sender.Send(command, cancellationToken);
+        return result.ToHttpResult();
+    }
+
     private Guid GetCustomerIdFromClaims()
     {
         var claim = User.FindFirstValue(AppClaimTypes.CustomerId)
@@ -46,3 +59,5 @@ public sealed class PointsController(ISender sender) : ControllerBase
 }
 
 public sealed record RedeemPointsRequest(int Points, string Description);
+
+public sealed record ReversePointsRequest(string Reason);
