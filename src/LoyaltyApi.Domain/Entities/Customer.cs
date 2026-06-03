@@ -18,12 +18,13 @@ public sealed class Customer : BaseEntity<Guid>
     // Private parameterless constructor for EF Core.
     private Customer() { }
 
-    private Customer(Guid id, string fullName, Email email, Document document)
+    private Customer(Guid id, string fullName, Email email, Document document, string identityUserId)
         : base(id)
     {
         FullName = fullName;
         Email = email;
         Document = document;
+        IdentityUserId = identityUserId;
         Tier = CustomerTier.Standard;
         PointsBalance = 0;
         TotalPointsEarned = 0;
@@ -32,6 +33,9 @@ public sealed class Customer : BaseEntity<Guid>
     public string FullName { get; private set; } = default!;
     public Email Email { get; private set; } = default!;
     public Document Document { get; private set; } = default!;
+
+    /// <summary>Foreign key to the ASP.NET Core Identity user. Used for fast lookups after JWT authentication.</summary>
+    public string IdentityUserId { get; private set; } = default!;
     public CustomerTier Tier { get; private set; }
 
     /// <summary>Current redeemable balance. Never goes below zero.</summary>
@@ -47,12 +51,15 @@ public sealed class Customer : BaseEntity<Guid>
     // Factory
     // -------------------------------------------------------------------------
 
-    public static Customer Create(string fullName, Email email, Document document)
+    public static Customer Create(string fullName, Email email, Document document, string identityUserId)
     {
         if (string.IsNullOrWhiteSpace(fullName))
             throw new DomainException("Full name cannot be empty.");
 
-        return new Customer(Guid.NewGuid(), fullName, email, document);
+        if (string.IsNullOrWhiteSpace(identityUserId))
+            throw new DomainException("Identity user ID cannot be empty.");
+
+        return new Customer(Guid.NewGuid(), fullName, email, document, identityUserId);
     }
 
     // -------------------------------------------------------------------------
