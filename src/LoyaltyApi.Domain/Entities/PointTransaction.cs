@@ -50,6 +50,18 @@ public sealed class PointTransaction : BaseEntity<Guid>
     /// </summary>
     public DateTime? ExpiresAt { get; private set; }
 
+    /// <summary>Indicates whether this transaction has been reversed.</summary>
+    public bool IsReversed { get; private set; }
+
+    /// <summary>The ID of the reversal transaction that reversed this one.</summary>
+    public Guid? ReversedByTransactionId { get; private set; }
+
+    /// <summary>
+    /// A transaction can be reversed if it hasn't been reversed already
+    /// and is of type Earned or Redeemed (not Expired, Adjusted, or Reversed).
+    /// </summary>
+    public bool CanBeReversed => !IsReversed && Type is TransactionType.Earned or TransactionType.Redeemed;
+
     // -------------------------------------------------------------------------
     // Internal factory methods — only Customer (same assembly) may call these.
     // -------------------------------------------------------------------------
@@ -83,4 +95,20 @@ public sealed class PointTransaction : BaseEntity<Guid>
         int points,
         string description)
         => new(id, customerId, points, TransactionType.Adjusted, description, null, null);
+
+    internal static PointTransaction CreateReversed(
+        Guid id,
+        Guid customerId,
+        int points,
+        string description,
+        string? referenceId)
+        => new(id, customerId, points, TransactionType.Reversed, description, referenceId, null);
+
+    /// <summary>Marks this transaction as reversed by the given reversal transaction.</summary>
+    internal void MarkAsReversed(Guid reversalTransactionId)
+    {
+        IsReversed = true;
+        ReversedByTransactionId = reversalTransactionId;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }
