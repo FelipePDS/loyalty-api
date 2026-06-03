@@ -48,4 +48,19 @@ internal sealed class PointTransactionRepository : IPointTransactionRepository
                 t.Points > 0)
             .OrderBy(t => t.ExpiresAt)
             .ToListAsync(cancellationToken);
+
+    public async Task<int> GetAboutToExpirePointsAsync(
+        Guid customerId,
+        DateTime from,
+        DateTime to,
+        CancellationToken cancellationToken = default)
+        => await _context.PointTransactions
+            .AsNoTracking()
+            .Where(t =>
+                t.CustomerId == customerId &&
+                t.Type == TransactionType.Earned &&
+                t.ExpiresAt != null &&
+                t.ExpiresAt > from &&
+                t.ExpiresAt <= to)
+            .SumAsync(t => t.Points, cancellationToken);
 }

@@ -38,4 +38,27 @@ internal sealed class CustomerRepository : ICustomerRepository
 
     public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
         => await _context.Customers.AnyAsync(c => c.Id == id, cancellationToken);
+
+    public async Task<Customer?> GetByIdentityUserIdAsync(string identityUserId, CancellationToken cancellationToken = default)
+        => await _context.Customers
+            .FirstOrDefaultAsync(c => c.IdentityUserId == identityUserId, cancellationToken);
+
+    public async Task<bool> ExistsByIdentityUserIdAsync(string identityUserId, CancellationToken cancellationToken = default)
+        => await _context.Customers.AnyAsync(c => c.IdentityUserId == identityUserId, cancellationToken);
+
+    public async Task<(IReadOnlyList<Customer> Items, int TotalCount)> GetAllAsync(
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var totalCount = await _context.Customers.CountAsync(cancellationToken);
+        var items = await _context.Customers
+            .AsNoTracking()
+            .OrderByDescending(c => c.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalCount);
+    }
 }
