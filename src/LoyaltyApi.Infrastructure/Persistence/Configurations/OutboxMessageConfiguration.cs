@@ -21,7 +21,7 @@ internal sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<Outb
 
         builder.Property(o => o.Payload)
             .IsRequired()
-            .HasColumnType("nvarchar(max)");
+            .HasColumnType("text");
 
         builder.Property(o => o.OccurredAt).IsRequired();
         builder.Property(o => o.ProcessedAt);

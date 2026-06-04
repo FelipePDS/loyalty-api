@@ -20,7 +20,7 @@ internal sealed class CampaignConfiguration : IEntityTypeConfiguration<Campaign>
             .HasMaxLength(200);
 
         builder.Property(c => c.PointsPerUnit)
-            .HasColumnType("decimal(18,4)")
+            .HasColumnType("numeric(18,4)")
             .IsRequired();
 
         builder.Property(c => c.StartDate).IsRequired();

@@ -5,4 +5,8 @@
     <Project Path="src/LoyaltyApi.Domain/LoyaltyApi.Domain.csproj" />
     <Project Path="src/LoyaltyApi.Infrastructure/LoyaltyApi.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/LoyaltyApi.IntegrationTests/LoyaltyApi.IntegrationTests.csproj" />
+    <Project Path="tests/LoyaltyApi.UnitTests/LoyaltyApi.UnitTests.csproj" />
+  </Folder>
 </Solution>
