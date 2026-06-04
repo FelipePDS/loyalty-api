@@ -1,0 +1,16 @@
+**/.git
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/node_modules
+**/out
+**/.env
+**/logs
+**/TestResults
+**/*.user
+**/*.suo
+**/docs
+**/tests
+README.md
+.gitignore
