@@ -25,19 +25,19 @@ public static class InfrastructureServiceCollectionExtensions
         // constructor receives it directly for use in EF value converters.
         services.AddSingleton<IEncryptionService, EncryptionService>();
 
-        // EF Core DbContext with SQL Server + Polly retry via EnableRetryOnFailure
+        // EF Core DbContext with PostgreSQL + retry via EnableRetryOnFailure
         services.AddDbContext<LoyaltyApiDbContext>((sp, options) =>
         {
             var encryption = sp.GetRequiredService<IEncryptionService>();
-            options.UseSqlServer(
+            options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
-                sql =>
+                npgsql =>
                 {
-                    sql.EnableRetryOnFailure(
+                    npgsql.EnableRetryOnFailure(
                         maxRetryCount: 5,
                         maxRetryDelay: TimeSpan.FromSeconds(30),
-                        errorNumbersToAdd: null);
-                    sql.MigrationsAssembly(typeof(LoyaltyApiDbContext).Assembly.FullName);
+                        errorCodesToAdd: null);
+                    npgsql.MigrationsAssembly(typeof(LoyaltyApiDbContext).Assembly.FullName);
                 });
         });
 
