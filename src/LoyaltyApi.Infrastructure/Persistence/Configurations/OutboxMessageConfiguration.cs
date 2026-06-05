@@ -28,7 +28,7 @@ internal sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<Outb
 
         // Allow the outbox processor to efficiently query unprocessed messages
         builder.HasIndex(o => o.ProcessedAt)
-            .HasFilter("[ProcessedAt] IS NULL")
+            .HasFilter("\"ProcessedAt\" IS NULL")
             .HasDatabaseName("IX_OutboxMessages_ProcessedAt_Unprocessed");
     }
 }

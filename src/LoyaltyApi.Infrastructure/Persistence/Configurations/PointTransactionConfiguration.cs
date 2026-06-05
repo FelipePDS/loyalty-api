@@ -39,7 +39,7 @@ internal sealed class PointTransactionConfiguration : IEntityTypeConfiguration<P
 
         // Composite index for expiration queries
         builder.HasIndex(t => new { t.CustomerId, t.ExpiresAt })
-            .HasFilter("[ExpiresAt] IS NOT NULL")
+            .HasFilter("\"ExpiresAt\" IS NOT NULL")
             .HasDatabaseName("IX_PointTransactions_CustomerId_ExpiresAt");
 
         // Covering index for transaction history queries

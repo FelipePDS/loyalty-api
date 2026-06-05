@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -145,6 +146,21 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// ─── Database initialization & role seeding ─────────────────────────────────
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LoyaltyApiDbContext>();
+    await db.Database.EnsureCreatedAsync();
+
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    string[] roles = ["Customer", "Partner", "Admin"];
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role));
+    }
+}
 
 // ─── Middleware pipeline ────────────────────────────────────────────────────
 app.UseMiddleware<CorrelationIdMiddleware>();
