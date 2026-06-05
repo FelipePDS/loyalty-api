@@ -69,6 +69,32 @@ internal sealed class UnitOfWork : IUnitOfWork
         }
     }
 
+    public async Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation, CancellationToken cancellationToken = default)
+    {
+        var strategy = _context.Database.CreateExecutionStrategy();
+        return await strategy.ExecuteAsync(
+            state: operation,
+            operation: async (dbContext, state, ct) =>
+            {
+                await using var transaction = await _context.Database.BeginTransactionAsync(ct);
+                try
+                {
+                    var result = await state();
+                    PublishDomainEventsToOutbox();
+                    await _context.SaveChangesAsync(ct);
+                    await transaction.CommitAsync(ct);
+                    return result;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync(ct);
+                    throw;
+                }
+            },
+            verifySucceeded: null,
+            cancellationToken);
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (_currentTransaction is not null)

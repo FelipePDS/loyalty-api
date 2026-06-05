@@ -18,22 +18,14 @@ public sealed class TransactionBehavior<TRequest, TResponse>(
     {
         var requestName = typeof(TRequest).Name;
 
-        try
+        return await unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            await unitOfWork.BeginTransactionAsync(cancellationToken);
             logger.LogDebug("Begin transaction for {RequestName}", requestName);
 
             var response = await next();
-            await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogDebug("Committed transaction for {RequestName}", requestName);
             return response;
-        }
-        catch
-        {
-            await unitOfWork.RollbackAsync(cancellationToken);
-            logger.LogWarning("Rolled back transaction for {RequestName}", requestName);
-            throw;
-        }
+        }, cancellationToken);
     }
 }
